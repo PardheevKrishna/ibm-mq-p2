@@ -60,7 +60,7 @@ function readCsv(file: string): CsvRow[] {
           consumer_queue_type:   rec.consumer_queue_name ?? "",
         } as CsvRow;
       }
-      return rec as CsvRow;
+      return rec as unknown as CsvRow;
     },
   }) as CsvRow[];
 }
