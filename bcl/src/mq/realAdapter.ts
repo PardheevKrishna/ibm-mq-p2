@@ -29,19 +29,35 @@ export class RealAdapter implements MqAdapter {
   private async mqsc(qm: string, command: string): Promise<void> {
     const url = `${this.baseFor(qm)}/ibmmq/rest/v2/admin/action/qmgr/${qm}/mqsc`;
     const auth = Buffer.from(`${this.user}:${this.pass}`).toString("base64");
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "ibm-mq-rest-csrf-token": "x",
-        Authorization: `Basic ${auth}`,
-      },
-      body: JSON.stringify({ type: "runCommand", parameters: { command } }),
-    });
-    if (!res.ok) {
-      const body = await res.text().catch(() => "");
-      throw new Error(`MQSC failed on ${qm}: ${res.status} ${body}`);
+    const maxRetries = 3;
+    let lastError: unknown;
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        const res = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "ibm-mq-rest-csrf-token": "x",
+            Authorization: `Basic ${auth}`,
+          },
+          body: JSON.stringify({ type: "runCommand", parameters: { command } }),
+        });
+        if (!res.ok) {
+          const body = await res.text().catch(() => "");
+          throw new Error(`MQSC failed on ${qm}: ${res.status} ${body}`);
+        }
+        return; // success
+      } catch (e) {
+        lastError = e;
+        // Only retry on network-level errors (fetch failed / TLS), not HTTP errors
+        const msg = e instanceof Error ? e.message : String(e);
+        if (msg.startsWith("MQSC failed on")) throw e; // HTTP error, don't retry
+        if (attempt < maxRetries) {
+          await new Promise((r) => setTimeout(r, 1000 * 2 ** attempt));
+        }
+      }
     }
+    throw lastError;
   }
 
   async ping() {

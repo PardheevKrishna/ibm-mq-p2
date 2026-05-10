@@ -27,11 +27,13 @@ services:
         condition: service_healthy
     environment:
       - PORT=8080
-      - BCL_MODE=real                   # real = talk to IBM MQ admin REST; sim = in-memory
+      - BCL_MODE=sim                   # real = talk to IBM MQ admin REST; sim = in-memory
       - BCL_DATA_DIR=/data
       - LOG_LEVEL=info
       - BCL_MQ_USER=REDACTED
       - BCL_MQ_PASSWORD=REDACTED
+      # Accept self-signed TLS certs from the MQ containers on the Docker network
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
       # When BCL_MODE=real, the BCL talks to these REST endpoints per QM:
       - BCL_MQ_BASE_URL_WL6EEBDJ=https://mq-source-1:9443
       - BCL_MQ_BASE_URL_WQ22=https://mq-source-2:9443
