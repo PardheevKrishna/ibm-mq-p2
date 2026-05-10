@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { api } from "../api/client.ts";
-import { useBclSocket } from "../api/ws.ts";
-import type { Channel, Queue, QueueManager } from "../api/types.ts";
+import { api } from "../api/client";
+import { useBclSocket } from "../api/ws";
+import type { Channel, Queue, QueueManager } from "../api/types";
 
 export default function FleetPage() {
   const [qms, setQms] = useState<QueueManager[]>([]);

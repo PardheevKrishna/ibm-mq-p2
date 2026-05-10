@@ -1,11 +1,11 @@
 import { Navigate, NavLink, Route, Routes } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useBclSocket } from "./api/ws.ts";
-import { api } from "./api/client.ts";
-import TopologyPage from "./pages/TopologyPage.tsx";
-import MigrationPage from "./pages/MigrationPage.tsx";
-import FleetPage from "./pages/FleetPage.tsx";
-import AuditPage from "./pages/AuditPage.tsx";
+import { useBclSocket } from "./api/ws";
+import { api } from "./api/client";
+import TopologyPage from "./pages/TopologyPage";
+import MigrationPage from "./pages/MigrationPage";
+import FleetPage from "./pages/FleetPage";
+import AuditPage from "./pages/AuditPage";
 import "./app.css";
 
 interface AppState {

@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import type { Topology } from "../api/types.ts";
+import type { Topology } from "../api/types";
 
 /**
  * SVG topology graph. Apps on the left, queue managers in the center,

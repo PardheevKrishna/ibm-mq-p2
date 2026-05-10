@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { api } from "../api/client.ts";
-import { useBclSocket } from "../api/ws.ts";
-import type { Topology } from "../api/types.ts";
-import TopologyGraph from "../components/TopologyGraph.tsx";
+import { api } from "../api/client";
+import { useBclSocket } from "../api/ws";
+import type { Topology } from "../api/types";
+import TopologyGraph from "../components/TopologyGraph";
 
 interface ProvisionProgress {
   total: number; done: number; failed: number; status: string; errors: string[];
@@ -132,20 +132,7 @@ export default function TopologyPage() {
         <div className="wf-card wf-card-tight"><div className="wf-kpi"><span className="wf-kpi-label">Channels target</span><span className="wf-kpi-num">{stats?.targetChannels}</span></div></div>
       </div>
 
-      {/* Controls */}
-      <div className="wf-card wf-card-tight" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
-        <div style={{ display: "flex", gap: 8, alignItems: "center", color: "var(--wf-mute)", fontSize: 12.5 }}>
-          <span className="wf-kicker">Tip</span>
-          Live working state moved to the <strong>Migration Cockpit</strong> tab — it lives next to the controls that mutate it.
-        </div>
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <span className="wf-kicker">Highlight app</span>
-          <select className="wf-btn" value={highlight} onChange={(e) => setHighlight(e.target.value)} style={{ padding: "8px 12px" }}>
-            <option value="">— all —</option>
-            {apps.map((a) => <option key={a.appId} value={a.appId}>{a.appId} · {a.appName.slice(0,30)}</option>)}
-          </select>
-        </div>
-      </div>
+          {/* Controls removed per request */}
 
       {/* Legend */}
       <div className="wf-card wf-card-tight" style={{ display: "flex", gap: 18, flexWrap: "wrap", alignItems: "center" }}>

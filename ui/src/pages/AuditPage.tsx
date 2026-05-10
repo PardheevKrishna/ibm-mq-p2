@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { api } from "../api/client.ts";
-import { useBclSocket } from "../api/ws.ts";
-import type { AuditEvent, ValidationResult } from "../api/types.ts";
+import { api } from "../api/client";
+import { useBclSocket } from "../api/ws";
+import type { AuditEvent, ValidationResult } from "../api/types";
 
 const KIND_GROUPS = [
   { label: "All", match: () => true },

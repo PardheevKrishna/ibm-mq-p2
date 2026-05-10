@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { api } from "../api/client.ts";
-import { useBclSocket } from "../api/ws.ts";
-import type { AppRef, MigrationPlan, Topology, ValidationResult } from "../api/types.ts";
-import TopologyGraph from "../components/TopologyGraph.tsx";
+import { api } from "../api/client";
+import { useBclSocket } from "../api/ws";
+import type { AppRef, MigrationPlan, Topology, ValidationResult } from "../api/types";
+import TopologyGraph from "../components/TopologyGraph";
 
 const PHASES: Array<MigrationPlan["steps"][number]["phase"]> = ["STAGE", "WIRE", "CUTOVER", "VERIFY", "CLEAN"];
 

@@ -6,7 +6,7 @@ import type {
   QueueManager,
   Topology,
   ValidationResult,
-} from "./types.ts";
+} from "./types";
 
 async function get<T>(path: string): Promise<T> {
   const r = await fetch(path);
