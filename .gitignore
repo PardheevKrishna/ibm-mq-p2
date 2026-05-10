@@ -43,6 +43,8 @@ keys/
 # Secrets
 secrets/
 *.secret
+.env*
+!.env.example
 
 # Coverage
 coverage/

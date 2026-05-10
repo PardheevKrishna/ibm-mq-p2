@@ -30,8 +30,8 @@ services:
       - BCL_MODE=sim                   # real = talk to IBM MQ admin REST; sim = in-memory
       - BCL_DATA_DIR=/data
       - LOG_LEVEL=info
-      - BCL_MQ_USER=REDACTED
-      - BCL_MQ_PASSWORD=REDACTED
+      - BCL_MQ_USER=${BCL_MQ_USER:-admin}
+      - BCL_MQ_PASSWORD=${BCL_MQ_PASSWORD}
       # Accept self-signed TLS certs from the MQ containers on the Docker network
       - NODE_TLS_REJECT_UNAUTHORIZED=0
       # When BCL_MODE=real, the BCL talks to these REST endpoints per QM:
@@ -68,8 +68,8 @@ services:
     environment:
       - LICENSE=accept
       - MQ_QMGR_NAME=WL6EEBDJ
-      - MQ_ADMIN_PASSWORD=REDACTED
-      - MQ_APP_PASSWORD=REDACTED
+      - MQ_ADMIN_PASSWORD=${MQ_ADMIN_PASSWORD}
+      - MQ_APP_PASSWORD=${MQ_APP_PASSWORD}
     ports:
       - "1414:1414"
       - "9443:9443"
@@ -86,8 +86,8 @@ services:
     environment:
       - LICENSE=accept
       - MQ_QMGR_NAME=WQ22
-      - MQ_ADMIN_PASSWORD=REDACTED
-      - MQ_APP_PASSWORD=REDACTED
+      - MQ_ADMIN_PASSWORD=${MQ_ADMIN_PASSWORD}
+      - MQ_APP_PASSWORD=${MQ_APP_PASSWORD}
     ports:
       - "1415:1414"
       - "9444:9443"
@@ -104,8 +104,8 @@ services:
     environment:
       - LICENSE=accept
       - MQ_QMGR_NAME=APPQM_LIY_KW
-      - MQ_ADMIN_PASSWORD=REDACTED
-      - MQ_APP_PASSWORD=REDACTED
+      - MQ_ADMIN_PASSWORD=${MQ_ADMIN_PASSWORD}
+      - MQ_APP_PASSWORD=${MQ_APP_PASSWORD}
     ports:
       - "1416:1414"
       - "9445:9443"
