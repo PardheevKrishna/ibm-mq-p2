@@ -1,0 +1,30 @@
+{
+  "name": "mq-bcl",
+  "version": "1.0.0",
+  "description": "Business Control Layer for IBM MQ topology migration (Demo Hackathon)",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "test": "tsx --test test/*.test.ts"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "csv-parse": "^5.5.6",
+    "express": "^4.19.2",
+    "nanoid": "^5.0.7",
+    "pino": "^9.3.2",
+    "pino-http": "^10.2.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.14.10",
+    "@types/ws": "^8.5.12",
+    "tsx": "^4.16.2",
+    "typescript": "^5.5.3"
+  }
+}

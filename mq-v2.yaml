@@ -1,0 +1,149 @@
+---
+# ==========================
+# Secret: MQ Passwords
+# ==========================
+apiVersion: v1
+kind: Secret
+metadata:
+  name: finance-qm-secret
+  namespace: messaging-infra
+  labels:
+    app: finance-mq
+    environment: production
+type: Opaque
+data:
+  # Base64 encoded dummy passwords removed for privacy
+  mqAdminPassword: REDACTED
+  mqAppPassword: REDACTED
+
+---
+# ==========================
+# Deployment: Queue Manager
+# ==========================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: finance-qm-deployment
+  namespace: messaging-infra
+  labels:
+    app: finance-mq
+    environment: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: finance-mq
+  template:
+    metadata:
+      labels:
+        app: finance-mq
+        environment: production
+      annotations:
+        # Prevents Istio sidecar injection if using a service mesh
+        sidecar.istio.io/inject: "false"
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: mq-container
+        # Using the public IBM Container Registry image instead of a private one
+        image: icr.io/ibm-messaging/mq:9.3.3.0-r1
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            cpu: "1"
+            memory: 2Gi
+          limits:
+            cpu: "2"
+            memory: 4Gi
+        startupProbe:
+          exec:
+            command: ["chkmqstarted"]
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 20
+        readinessProbe:
+          exec:
+            command: ["chkmqready"]
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        livenessProbe:
+          exec:
+            command: ["chkmqhealthy"]
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
+        env:
+        - name: LICENSE
+          value: accept
+        - name: MQ_QMGR_NAME
+          value: FINQM1
+        - name: MQ_ADMIN_PASSWORD
+          value: REDACTED
+        - name: MQ_APP_PASSWORD
+          value: REDACTED
+        volumeMounts:
+        - name: mq-credentials
+          mountPath: /run/secrets
+          readOnly: true
+        ports:
+        - name: tcp-listener
+          containerPort: 1414
+          protocol: TCP
+        - name: web-console
+          containerPort: 9443
+          protocol: TCP
+      volumes:
+      - name: mq-credentials
+        secret:
+          secretName: finance-qm-secret
+
+---
+# ==========================
+# Service: Internal Cluster Access
+# ==========================
+apiVersion: v1
+kind: Service
+metadata:
+  name: finance-qm-svc
+  namespace: messaging-infra
+  labels:
+    app: finance-mq
+    environment: production
+spec:
+  selector:
+    app: finance-mq
+  type: ClusterIP
+  ports:
+    - name: tcp-listener
+      port: 1414
+      targetPort: tcp-listener
+      protocol: TCP
+    - name: web-console
+      port: 9443
+      targetPort: web-console
+      protocol: TCP
+
+---
+# ==========================
+# OpenShift Route: Web Console Access
+# ==========================
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: finance-qm-console-route
+  namespace: messaging-infra
+  labels:
+    app: finance-mq
+    environment: production
+  annotations:
+    haproxy.router.openshift.io/disable_cookies: "true"
+spec:
+  to:
+    kind: Service
+    name: finance-qm-svc
+  port:
+    targetPort: web-console
+  tls:
+    # Uses passthrough so the MQ container's built-in keystore handles TLS termination
+    termination: passthrough

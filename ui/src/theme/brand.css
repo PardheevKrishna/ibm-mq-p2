@@ -1,0 +1,148 @@
+/* ==========================================================================
+   Brand design tokens.
+   Brand: primary red + gold tokens on white. Color variables drive the UI.
+   ========================================================================== */
+
+:root {
+  --wf-red: #D71E28;
+  --wf-red-dark: #B3141C;
+  --wf-red-darker: #8A0F16;
+  --wf-red-50: #FFF2F3;
+  --wf-red-100: #FFE0E2;
+  --wf-red-tint: #FBE3E5;
+
+  --wf-gold: #FFCD41;
+  --wf-gold-dark: #E5B82A;
+  --wf-gold-50: #FFF8E0;
+
+  --wf-white: #FFFFFF;
+  --wf-cream: #FAF7F1;
+  --wf-charcoal: #2A2A2A;
+  --wf-ink: #1B1B1B;
+  --wf-slate: #4A4A4A;
+  --wf-mute:  #6B6B6B;
+  --wf-line:  #E6E1D6;
+  --wf-line-soft: #F0EDE5;
+
+  --wf-good: #157A3F;
+  --wf-good-50: #E6F4EC;
+  --wf-warn: #B7651D;
+  --wf-warn-50: #FFF1DD;
+  --wf-bad:  #C0212B;
+  --wf-bad-50: #FFE7E9;
+
+  --wf-shadow-sm: 0 1px 2px rgba(28,18,12,0.06), 0 1px 1px rgba(28,18,12,0.04);
+  --wf-shadow:    0 4px 14px rgba(28,18,12,0.08), 0 1px 2px rgba(28,18,12,0.05);
+  --wf-shadow-lg: 0 16px 40px rgba(28,18,12,0.12), 0 2px 6px rgba(28,18,12,0.06);
+
+  --wf-radius-sm: 6px;
+  --wf-radius:    10px;
+  --wf-radius-lg: 16px;
+
+  --wf-font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                  "Helvetica Neue", Arial, sans-serif;
+  --wf-font-mono: ui-monospace, SFMono-Regular, "JetBrains Mono", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+@keyframes wf-pulse {
+  0%, 100% { transform: scale(1);   opacity: 1; }
+  50%       { transform: scale(1.3); opacity: .6; }
+}
+
+html, body, #root { height: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--wf-font-sans);
+  font-size: 14px;
+  color: var(--wf-ink);
+  background: var(--wf-cream);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a { color: var(--wf-red-dark); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+button { font-family: inherit; cursor: pointer; }
+
+::selection { background: var(--wf-red-100); color: var(--wf-ink); }
+
+/* ---------- shared primitives -------------------------------------------- */
+
+.wf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: var(--wf-radius);
+  border: 1px solid transparent;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  transition: all 120ms ease;
+  background: var(--wf-white);
+  color: var(--wf-ink);
+  border-color: var(--wf-line);
+}
+.wf-btn:hover { border-color: var(--wf-red); color: var(--wf-red-dark); }
+.wf-btn:active { transform: translateY(1px); }
+.wf-btn-primary {
+  background: linear-gradient(180deg, var(--wf-red) 0%, var(--wf-red-dark) 100%);
+  color: var(--wf-white);
+  border-color: var(--wf-red-darker);
+  box-shadow: var(--wf-shadow-sm);
+}
+.wf-btn-primary:hover {
+  background: linear-gradient(180deg, var(--wf-red-dark) 0%, var(--wf-red-darker) 100%);
+  color: var(--wf-white);
+}
+.wf-btn-ghost { background: transparent; border-color: transparent; color: var(--wf-slate); }
+.wf-btn-ghost:hover { background: var(--wf-red-50); color: var(--wf-red-dark); }
+.wf-btn-danger { background: var(--wf-bad-50); color: var(--wf-bad); border-color: var(--wf-bad); }
+.wf-btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+
+.wf-card { background: var(--wf-white); border: 1px solid var(--wf-line); border-radius: var(--wf-radius-lg); box-shadow: var(--wf-shadow-sm); padding: 20px; }
+.wf-card-tight { padding: 14px 16px; }
+.wf-card h2, .wf-card h3 { margin: 0 0 12px; }
+
+.wf-pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 600; border: 1px solid var(--wf-line); background: var(--wf-white); color: var(--wf-slate); }
+.wf-pill-good { background: var(--wf-good-50); color: var(--wf-good); border-color: var(--wf-good); }
+.wf-pill-warn { background: var(--wf-warn-50); color: var(--wf-warn); border-color: var(--wf-warn); }
+.wf-pill-bad  { background: var(--wf-bad-50);  color: var(--wf-bad);  border-color: var(--wf-bad); }
+.wf-pill-info { background: var(--wf-red-50);  color: var(--wf-red-dark); border-color: var(--wf-red); }
+.wf-pill-mute { background: var(--wf-line-soft); color: var(--wf-mute); }
+
+.wf-grid { display: grid; gap: 16px; }
+.wf-grid-2 { grid-template-columns: repeat(2, 1fr); }
+.wf-grid-3 { grid-template-columns: repeat(3, 1fr); }
+.wf-grid-4 { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 1100px) { .wf-grid-3, .wf-grid-4 { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 720px) { .wf-grid-2, .wf-grid-3, .wf-grid-4 { grid-template-columns: 1fr; } }
+
+.wf-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.wf-table th, .wf-table td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--wf-line); }
+.wf-table th { font-weight: 600; color: var(--wf-mute); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.05em; background: var(--wf-line-soft); }
+.wf-table tr:hover td { background: var(--wf-red-50); }
+
+.wf-mono { font-family: var(--wf-font-mono); font-size: 12.5px; }
+
+.wf-spinner { width: 14px; height: 14px; border: 2px solid var(--wf-line); border-top-color: var(--wf-red); border-radius: 50%; animation: wf-spin 0.8s linear infinite; display: inline-block; }
+@keyframes wf-spin { to { transform: rotate(360deg); } }
+
+.wf-empty { padding: 40px; text-align: center; color: var(--wf-mute); border: 1px dashed var(--wf-line); border-radius: var(--wf-radius); background: var(--wf-cream); }
+
+.wf-kicker { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--wf-red-dark); font-weight: 700; }
+
+.wf-kpi { display: flex; flex-direction: column; gap: 6px; }
+.wf-kpi-num { font-size: 28px; font-weight: 700; color: var(--wf-ink); letter-spacing: -0.02em; line-height: 1; }
+.wf-kpi-label { font-size: 11.5px; color: var(--wf-mute); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+
+.wf-divider { height: 1px; background: var(--wf-line); margin: 16px 0; }
+
+.wf-scroll { overflow: auto; }
+.wf-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+.wf-scroll::-webkit-scrollbar-thumb { background: var(--wf-line); border-radius: 4px; }
+.wf-scroll::-webkit-scrollbar-thumb:hover { background: var(--wf-red); }

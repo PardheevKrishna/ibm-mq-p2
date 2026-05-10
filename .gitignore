@@ -1,0 +1,55 @@
+# Node
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Build
+dist/
+build/
+.esbuild/
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+
+# Editor
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
+
+# Docker
+docker-compose.override.yml
+
+# Keys and certificates
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+certs/
+keys/
+
+# Secrets
+secrets/
+*.secret
+
+# Coverage
+coverage/
+
+# Misc
+*.tgz
+
+# Ignore local data buckets that may contain PII (sanitize before committing)
+/data/raw/
+/data/private/

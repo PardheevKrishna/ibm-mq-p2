@@ -1,0 +1,119 @@
+# ============================================================================
+#  MQ Topology Control Plane — local demo stack
+#
+#  Brings up:
+#    bcl   — Business Control Layer (Node 20 / Express / WS)  :8080
+#    ui    — React UI (Vite build served by nginx)            :5173 → :80
+#    mq-source-1 / mq-source-2  — IBM MQ containers (legacy QMs)
+#    mq-target-1               — IBM MQ container (one APPQM_* dedicated QM)
+#
+#  BCL_MODE=real — talks to the live IBM MQ admin REST APIs in the containers.
+#  Set BCL_MODE=sim to run fully in-memory with no MQ required (laptop demo).
+# ============================================================================
+
+services:
+  bcl:
+    build:
+      context: ./bcl
+      dockerfile: Dockerfile
+    image: mq-bcl:latest
+    container_name: mq-bcl
+    depends_on:
+      mq-source-1:
+        condition: service_healthy
+      mq-source-2:
+        condition: service_healthy
+      mq-target-1:
+        condition: service_healthy
+    environment:
+      - PORT=8080
+      - BCL_MODE=real                   # real = talk to IBM MQ admin REST; sim = in-memory
+      - BCL_DATA_DIR=/data
+      - LOG_LEVEL=info
+      - BCL_MQ_USER=REDACTED
+      - BCL_MQ_PASSWORD=REDACTED
+      # When BCL_MODE=real, the BCL talks to these REST endpoints per QM:
+      - BCL_MQ_BASE_URL_WL6EEBDJ=https://mq-source-1:9443
+      - BCL_MQ_BASE_URL_WQ22=https://mq-source-2:9443
+      - BCL_MQ_BASE_URL_APPQM_LIY_KW=https://mq-target-1:9443
+    volumes:
+      - ./data:/data:ro
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O-", "http://localhost:8080/healthz"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    networks: [mqplane]
+
+  ui:
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+    image: mq-ui:latest
+    container_name: mq-ui
+    depends_on:
+      - bcl
+    ports:
+      - "5173:80"
+    networks: [mqplane]
+
+  # --- IBM MQ fleet (subset of source + target so a laptop can run it) ------
+  mq-source-1:
+    image: icr.io/ibm-messaging/mq:9.3.3.0-r1
+    container_name: mq-source-1
+    environment:
+      - LICENSE=accept
+      - MQ_QMGR_NAME=WL6EEBDJ
+      - MQ_ADMIN_PASSWORD=REDACTED
+      - MQ_APP_PASSWORD=REDACTED
+    ports:
+      - "1414:1414"
+      - "9443:9443"
+    healthcheck:
+      test: ["CMD", "chkmqready"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    networks: [mqplane]
+
+  mq-source-2:
+    image: icr.io/ibm-messaging/mq:9.3.3.0-r1
+    container_name: mq-source-2
+    environment:
+      - LICENSE=accept
+      - MQ_QMGR_NAME=WQ22
+      - MQ_ADMIN_PASSWORD=REDACTED
+      - MQ_APP_PASSWORD=REDACTED
+    ports:
+      - "1415:1414"
+      - "9444:9443"
+    healthcheck:
+      test: ["CMD", "chkmqready"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    networks: [mqplane]
+
+  mq-target-1:
+    image: icr.io/ibm-messaging/mq:9.3.3.0-r1
+    container_name: mq-target-1
+    environment:
+      - LICENSE=accept
+      - MQ_QMGR_NAME=APPQM_LIY_KW
+      - MQ_ADMIN_PASSWORD=REDACTED
+      - MQ_APP_PASSWORD=REDACTED
+    ports:
+      - "1416:1414"
+      - "9445:9443"
+    healthcheck:
+      test: ["CMD", "chkmqready"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    networks: [mqplane]
+
+networks:
+  mqplane:
+    driver: bridge
